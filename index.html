@@ -13,7 +13,6 @@
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <!-- Font-->
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;900&display=swap');
             @import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Work+Sans:wght@300;700&display=swap');        </style>
         
 
@@ -128,13 +127,13 @@
                         <p>
                           Use this tool to explore the <b>trends of extreme rainfall</b> at the regional scale of North Wales over the last 80 years. Note that whilst there is large variation in the trends for individual month, there is a noticeable increase in extreme rainfall events when all months are considered. Though the increase is gradual, the MET office anticipates that rainfall will like continue to steadily increase due to global warming and put an increasing pressure on society, demanding ever increasing funding, precautions, and anticipation.
                         </p>
-                        <button type="button" class="btn btn-lg btn-col">Explore</button>
+                        <button type="button" onclick="window.open('WalesRainfall/WelshFloodsViz.html','_blank')" class="btn btn-lg btn-col">Explore</button>
                       </div>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- Contact section-->
+        <!-- Vulnerability section-->
         <section class="bg-light" id="vulnerability">
             <div class="container px-4">
                 <div class="row gx-4 justify-content-center">
@@ -148,9 +147,15 @@
                           <div class="col">
                             <h2>Population Vulnerability</h2>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam venenatis aliquet congue. Integer pellentesque, nulla in rutrum tincidunt, lacus nibh tempor risus, sit amet interdum nisl lectus eleifend turpis. Maecenas neque lectus, porttitor at malesuada eu, feugiat ut purus. Donec maximus libero eu massa viverra, at dapibus tortor tempor. Vestibulum risus dolor, auctor a scelerisque et, sodales vitae orci. Phasellus aliquet pharetra dolor, vel ullamcorper libero ullamcorper vitae. In hac habitasse platea dictumst. Phasellus congue ultricies enim, a mattis felis ullamcorper at. Duis lorem mauris, bibendum quis nibh id, consequat congue felis. Donec nec dui et quam fermentum commodo nec vitae quam. 
+                              How badly people will be affected will depend not just on their exposure to the floods, but on their social vulnerability – that is, how well they are able to cope with and respond to events. Social vulnerability relates to: 
+                              <ul>
+                                <li>Personal features of the individual, such as age and health, which affect sensitivity to climate impacts</li>
+                                <li>Environmental characteristics, such as quality of housing stock or elevation of buildings, which can increase or offset exposure to flooding or heat</li>
+                                <li>Social and institutional context, such as levels of inequality and income, the strength of social networks, which affect people’s ability to adapt</li>
+                              </ul>
+                              The map plots the indices of different aspects of vulnerability in various output areas in the UK. The performance of regions in different aspects of vulnerabilities is shown, for analyzing the source of their vulnerabilities and comparing the situation between cities. Different categorical indices represent different coping abilities in the face of floods, thus reflecting in what way and to what extent a local area is socially vulnerable.
                             </p>
-                            <button type="button" class="btn btn-lg btn-col">Explore</button>
+                            <button type="button" onclick="window.open('vulnerability.html','_blank')" class="btn btn-lg btn-col">Explore</button>
                           </div>
                           <div class="col">
                             <img src="assets/vulnerability.png" width = "500px">
