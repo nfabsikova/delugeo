@@ -1,0 +1,136 @@
+
+body { 
+  margin: 0; 
+  padding: 0; 
+}
+
+#map { 
+  position: absolute; 
+  top: 0; 
+  bottom: 0;
+   width: 100%;
+  height: 100%; 
+  }
+
+  p {
+    text-align: left;
+  }
+
+#button {
+  margin: 25px 0 10px 2px;
+  background-color: #d3d3d3; /* Green */
+  border: none;
+  color: black;
+  padding: 15px 15px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  font-family: 'Lato', serif;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+  #console {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding: 10px 50px 10px 20px;
+    position: absolute;
+    z-index: 1;
+    left: 10px;
+    top: 10px;
+    font-size: 16px;
+    text-align: justify;
+    font-family: 'Lato', serif;
+    max-width: 200px;
+    opacity: 0.9
+  }
+
+  .mapboxgl-popup {
+    max-width: 400px;
+    min-width: 180px;
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 0;
+    margin: 0,0,0,20px;
+    pointer-events: none;
+    opacity: 0.9;
+ }
+ 
+ .mapboxgl-popup-tip-container {
+     width:0px;
+     height:0px;
+     margin:0 auto;
+     position:relative;
+     pointer-events: none;
+   }
+ 
+ .mapboxgl-popup-tip {
+     width:0;
+     height:0;
+     margin:0;
+     border-left:0 solid transparent;
+     border-right:0 solid transparent;
+     border-top:0 solid transparent;
+     box-shadow:none;
+     pointer-events: none;
+ }
+
+   
+h4 {
+  margin: 20px 0 10px;
+  }
+
+  .cause-legend div {
+    height: 40px;
+  }
+   
+  #cause-legend div span {
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  margin-right: 10px;
+  width: 10px;
+  }
+
+  #deaths-legend div span {
+    border-radius: 50%;
+    display: inline-block;
+    background-color: black;
+    margin-right: 10px;
+    vertical-align: middle;
+    opacity: 0.7;
+    }
+
+  #slider {
+    -webkit-appearance: none;
+    width: 70%;
+    height: 10px;
+    border-radius: 5px;  
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    margin-top: 15px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  
+  #slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%; 
+    background: black;
+    opacity: 1;
+    cursor: pointer;
+    margin-top: 0px;
+  }
+  
+  
+  #slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: black;
+    cursor: pointer;
+  }

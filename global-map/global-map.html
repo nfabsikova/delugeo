@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Global Floods</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script> 
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+    <link href="global-map-style.css" rel="stylesheet">
+    <!-- <link href="nouislider.min.css" rel="stylesheet"> -->
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;900&display=swap');
+      </style>
+
+
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <div id='console' >
+      <h1>Flood History</h1>
+      <p>Use the <b>time slider</b> to select a specific year or <b>hover</b> over the legends to filter based on flood characteristics.
+      <br><br><b>Zoom in and hover</b> over a point to get more info, including the flood extent.
+      </p>
+
+      <div class='session'>
+        <h4>Year: <label id='active-year'>1985 - 2021</label></h4>
+        <input id='slider' class='row' type='range' min='1985' max='2021' step='1' value='2021'/>
+      </div>
+
+      
+      <input id="button" class="uk-button uk-button-default" type="button" value="Show all years" disabled>
+
+      <h4>Main Cause</h4>
+      <div id="cause-legend" class="legend">
+        <div id="heavyRain" style="height:25px;"><span style="background-color: #3b9da0"></span>Heavy rain</div>
+        <div id="tropicalStorm" style="height:25px;"><span style="background-color: #22429b"></span>Tropical storm/surge</div>
+        <div id="snowmeltIce" style="height:25px;"><span style="background-color: #3dbbff"></span>Snowmelt, ice</div>
+        <div id="dam" style="height:25px;"><span style="background-color: #b740f7"></span>Dam</div>
+        </div>
+
+      <h4>Number of Deaths</h4>
+      <div id="deaths-legend" class="legend">
+        <div id="0"style="height:24px;"><span style="height: 7px; width:7px;margin:0px 21.5px 0px 2.5px;;"></span>0</div>
+        <div id="1" style="height:28px;"><span style="height: 11px; width: 11px;margin:0px 19.5px 0px 0.5px;"></span>1 - 1,000</div>
+        <div id="1000" style="height:32px;"><span style="height: 19px; width: 19px; margin:0px 16.5px 0px -3.5px;"></span>1,000 - 100,000</div>
+        <div id="100000" style="height:45px;"><span style="height: 30px; width: 30px; margin:0px 10px 0px -8.5px;"></span>> 100,000 </div>
+        </div>
+
+    </div> 
+
+
+    <script type="text/JavaScript" src="global-map.js"></script> 
+
+    <!-- <table>
+      <tr>
+        <th><div style="justify-content: center;display:flex;"><span style="height: 7px; width: 7px;"></span></div></th>
+        <th><div>0</div></th>
+      </tr>
+      <tr>
+        <th><div style="justify-content: center;display:flex;"><span style="height: 11px; width: 11px;"></span></div></th>
+        <th><div>0</div></th>
+      </tr>
+      <tr>
+        <th><div style="justify-content: center;display:flex;"><span style="height: 19px; width: 19px;"></span></div></th>
+        <th><div>0</div></th>
+      </tr>
+      <tr>
+        <th><div style="justify-content: center;display:flex;"><span style="height: 30px; width: 30px;"></span></div></th>
+        <th><div>0</div></th>
+      </tr>
+    </table> -->
+
+  </body>
+
+</html>
