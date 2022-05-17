@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<!-- saved from url=(0103)https://zeqiang.fun/Digital-Viz-City-Transformations/Bicycle-Thefts-Risk/theft_frequency_map_tmp-3.html -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Flow Risk Visualization</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="mapbox-gl.js"></script>
+    <link href="mapbox-gl.css" rel="stylesheet">
+    <link href="MyMap.css?v=1.0" rel="stylesheet">
+    <style type="text/css">
+        #baseMapContainer {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+        }
+
+        .headBox {
+            position: absolute;
+            height: 48px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            z-index: 9999;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            /* background-color: rgba(92, 55, 226, 0.61); */
+            align-items: center;
+            text-align: center;
+        }
+
+        .headText {
+            font-size: 48px;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1050.0" data-gr-ext-installed="">
+
+    <div id="baseMapContainer" class="mapboxgl-map">
+        <div class="headBox">
+            <h1 class="headText"> London Flood and Flood defences </h1>
+             </div>
+        <div class="mapboxgl-canary" style="visibility: hidden;"></div>
+        <div class="mapboxgl-canvas-container mapboxgl-interactive mapboxgl-touch-drag-pan mapboxgl-touch-zoom-rotate">
+            <canvas class="mapboxgl-canvas" tabindex="0" aria-label="Map" role="region" width="2592" height="1200"
+                style="width: 1296px; height: 600px; cursor: default;"></canvas>
+        </div>
+        <div class="mapboxgl-control-container">
+            <div class="mapboxgl-ctrl-top-left"></div>
+            <div class="mapboxgl-ctrl-top-right"></div>
+            <div class="mapboxgl-ctrl-bottom-left">
+                <div class="mapboxgl-ctrl" style="display: block;"><a class="mapboxgl-ctrl-logo" target="_blank"
+                        rel="noopener nofollow" href="https://www.mapbox.com/" aria-label="Mapbox logo"></a></div>
+            </div>
+            <div class="mapboxgl-ctrl-bottom-right">
+                <div class="mapboxgl-ctrl mapboxgl-ctrl-attrib"><button class="mapboxgl-ctrl-attrib-button"
+                        title="Toggle attribution" aria-label="Toggle attribution"></button>
+                    <div class="mapboxgl-ctrl-attrib-inner" role="list"><a href="https://www.mapbox.com/about/maps/"
+                            target="_blank" title="Mapbox" aria-label="Mapbox" role="listitem">© Mapbox</a> <a
+                            href="https://www.openstreetmap.org/about/" target="_blank" title="OpenStreetMap"
+                            aria-label="OpenStreetMap" role="listitem">© OpenStreetMap</a> <a class="mapbox-improve-map"
+                            href="https://apps.mapbox.com/feedback/?owner=mengqingzhao&amp;id=ckoqcdvz57jo917o2jdq96bnq&amp;access_token=pk.eyJ1IjoibWVuZ3Fpbmd6aGFvIiwiYSI6ImNrbHloY2lvejFsdHAyd28zMnVwZGszaHcifQ.T8viEchUMVha2Cr2S8-1-Q"
+                            target="_blank" title="Map feedback" aria-label="Map feedback" role="listitem"
+                            rel="noopener nofollow">Improve this map</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="map-overlay timeSelect" id="features">
+        <h3 style="height: 8px;"> BayRegion Historical house price </h3>
+        <div class="splitLine"></div>
+        <label id="year">in 1994-04</label>
+        <input id="dateSlider" type="range" min=0 max=246 step=1 value="0" onchange="selectDate(value)">
+        <button id="startButton" class="clickButton" value="false" onclick="startAnimaton()">▶</input>
+            <button id="stopButton" class="clickButton" value="false"
+                style="font-size: 17px;padding: 0;margin-left: 4px;" onclick="stopAnimation()">■</input>
+    </div> -->
+
+    <center class="map-overlay layerSelect" id="layerSelect">
+        <h3 style="height: 8px;">Select Layers </h3>
+        <div class="splitLine"></div>
+        <form style="display: flex; flex-direction: column; align-items: flex-start;padding-left: 24px;" action=''
+            method="get">
+            <label><input id='ROFRSLondon_check' type="checkbox" value="ROFRSLondon" checked='true' class="checkbox"
+                    onchange="onSelectLayers(value)" />London Floood Risk Zones</label>
+           <!-- <label><input id='RiskFromRS_check' type="checkbox" value="RiskFromRS" class="checkbox"
+                    onchange="onSelectLayers(value)" />Risk From Rivers and Sea</label> -->
+            <label><input id='FloodDefences_check' type="checkbox" value="FloodDefences" class="checkbox"
+                    onchange="onSelectLayers(value)" />Flood Defences </label>
+            <label><input id='HistoricFlood_check' type="checkbox" value="HistoricFlood" class="checkbox"
+                    onchange="onSelectLayers(value)" />Historic Flood </label>
+            <!--<label><input id='RecordedFloodOutlines_check' type="checkbox" value="RecordedFloodOutlines"
+                    class="checkbox" onchange="onSelectLayers(value)" />Recorded Flood Outlines </label>
+            -->
+
+        </form>
+        <br />
+        <!-- <label for="poiTypeSelectBox" style="font-size:18px;font-weight:500;color:rgb(0, 110, 255)"> Data
+            Type:</label>
+        <select class="poiTypeSelectBox" name="poiTypeSelectBox" id="poiTypeSelectBox"
+            onchange="onChangeFieldColors(value)">
+            <option value="FloodDefences,effective_"> Flood Defences Effective</option>
+            <option value="Offensive">residential building offensive</option>
+            <option value="FloodDefences,effective_"> Flood Defences Effective</option>
+            <option value="Not_Offensive">residential building not offensive</option>
+
+
+        </select> -->
+    </center>
+
+    <div class="legendBox">
+        <div class="graffiti_legend" id='graffiti_legend'><b> Legend </b>
+            <div class="splitLine_legend"></div>
+            <div class="legend-sec-box ">
+                <div class="legend-poi" style="background-color: #05aaf7 ;"></div><span class="legend-text">Very Low</span>
+                
+            </div>
+            <div class="legend-sec-box ">
+                <div class="legend-poi" style="background-color: #0c5df4;"></div><span class="legend-text">Low</span>
+            </div>
+            <div class="legend-sec-box ">
+                <div class="legend-poi" style="background-color: #a35ce5;"></div><span class="legend-text">Medium</span>
+            </div>
+            <div class="legend-sec-box ">
+                <div class="legend-poi" style="background-color: #8509f2;"></div><span class="legend-text">High</span>
+            </div>
+            <!-- <div class="legend-sec-box ">
+                <div class="legend-poi" style="background-color: #A62000;"></div><span class="legend-text">850 +</span>
+            </div> -->
+            <div class="legend-sec-box ">
+                <div class="legend-poi" style="background-color: #8e9292;"></div><span class="legend-text">NoData</span>
+            </div>
+            <!-- <div class="legend-sec-box "><div class="legend-poi" style="background-color: #;"></div><span class="legend-text">200+</span></div> -->
+        </div>
+
+    </div>
+
+    <script>
+
+        let currentLayerName = 'BayRegion'
+        let currentDate = "1996-04"
+        let poisDataG = undefined
+        const initZoom = 9.5
+        const mapCenter = [0.0, 51.4317]
+        let layersValues = ['0-100', '100-200', '200-400', '400-600', '600-1000', '1000-1500', '1500+'];
+        let layerColors = ['#05aaf7', '#0c5df4', '#a35ce5', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026'];
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZHJlYW1jYXQiLCJhIjoiY2txa2Nra2E3MDk3bzJ3cnVkOG5xZjU0YiJ9.jwaut9d8OX3QdMxVqs8Rgw';
+        var myMap = new mapboxgl.Map({
+            container: 'baseMapContainer', // container id
+            style: 'mapbox://styles/dreamcat/cl36j706y002s14qvd2axeevv', // replace this with your style URL
+            center: mapCenter, // starting position [lng, lat]
+            zoom: initZoom, // starting zoom
+        });
+        // Date String List
+        const dateStringList = createSliderTimeList()
+
+        // createSymbolLayer('./static/points_graffiti_03.geojson', 'Graffiti', '', map)
+
+        function onselectPoisType(value) {
+            // let poisDataG =  JSON.parse(sessionStorage.getItem('poisDataG'))
+            if (!poisDataG) {
+                return
+            }
+
+            if (value === 'All') {
+                let originData = {
+                    crs: {
+                        type: 'name',
+                        properties: { name: "urn:ogc:def:crs:OGC:1.3:CRS84" }
+                    },
+                    features: poisDataG['features'],
+                    type: "FeatureCollection",
+                }
+                myMap.getSource('Graffiti').setData(poisDataG);
+
+            } else if (value === 'Offensive') {
+                let featureList = []
+                poisDataG.features.map(function (feature, index) {
+                    if (feature.properties.type === 1) {
+                        featureList.push(feature)
+                    }
+
+                })
+                let originData = {
+                    crs: {
+                        type: 'name',
+                        properties: { name: "urn:ogc:def:crs:OGC:1.3:CRS84" }
+                    },
+                    features: featureList,
+                    type: "FeatureCollection",
+                }
+                myMap.getSource('Graffiti').setData(originData);
+                // const filter = ['==', 'type', 1]
+                // map.setFilter('Graffiti', filter);
+            } else if (value === 'Not_Offensive') {
+                let featureList = []
+                poisDataG.features.map(function (feature, index) {
+                    if (feature.properties.type === 0) {
+                        featureList.push(feature)
+                    }
+                })
+                let originData = {
+                    crs: {
+                        type: 'name',
+                        properties: { name: "urn:ogc:def:crs:OGC:1.3:CRS84" }
+                    },
+                    features: featureList,
+                    type: "FeatureCollection",
+                }
+                myMap.getSource('Graffiti').setData(originData);
+
+            }
+
+            // console.log(value, 'valuevaluevalue');
+        }
+
+        myMap.on('load', async function () {
+            await createFillLayerByUnique('./statics/ROFRS_London.geojson', 'ROFRSLondon', "PROB_4BAND", myMap)
+
+
+            // $('#graffiti_legend').prop('style', 'display:visible')
+            myMap.getCanvas().style.cursor = 'default';
+            var current = 0;
+
+            var legend = document.getElementById('legend');
+
+
+            // for (i = 0; i < layers.length; i++) {
+            //     var layer = layers[i];
+            //     var color = colors[i];
+            //     var item = document.createElement('div');
+            //     var key = document.createElement('span');
+            //     key.className = 'legend-key';
+            //     key.style.backgroundColor = color;
+
+            //     var value = document.createElement('span');
+            //     value.innerHTML = layer;
+            //     item.appendChild(key);
+            //     item.appendChild(value);
+            //     legend.appendChild(item);
+            // }
+
+            var popup = new mapboxgl.Popup({
+                //                        offset: [0, -15]
+                closeButton: false,
+                closeOnClick: false
+            })
+            // myMap.on('mousemove', function (e) {
+            //     let features_onTouch = myMap.queryRenderedFeatures(e.point, {
+            //         layers: [currentLayerName]
+            //     });
+            //     if (features_onTouch.length > 0) {
+
+            //         // map.setFilter('boundaries', ['==', ['get', 'AREA_SHORT_CODE'], boroughs[0].properties.Hood_ID]);
+            //         // map.setLayoutProperty('boundaries', 'visibility', 'visible');
+            //         const regionName = features_onTouch[0].properties['City']
+            //         const price_value = features_onTouch[0].properties[currentDate]
+            //         popup.setLngLat(e.lngLat)
+            //             .setHTML('<h3> ' + regionName + '</h3><p>' + `<span style="font-size:24px;color:#FF7600;font-weight: 600;">${price_value}</span> dollars` + `</strong> in ${currentDate}</em></p>`)
+            //             .addTo(myMap);
+            //     } else {
+            //         popup.remove();
+            //         // map.setLayoutProperty('boundaries', 'visibility', 'none');
+            //     }
+            // });
+
+
+        });
+
+
+        let isAnimationStop = false
+        let dateSliderBox = $('#dateSlider')
+        function showDataByTime(value) {
+            console.log(value, 'valuevaluevaluevalue');
+            const newValue = parseInt(value)
+            if (isAnimationStop) {
+
+                return
+            }
+            // clicked = true
+            if (newValue < 246) {
+                try {
+                    const currentDate_new = dateStringList[newValue]
+                    myMap.setPaintProperty('BayRegion', 'fill-color', [
+                        "step",
+                        ["get", currentDate_new],
+                        "#FFEDA0", 100,
+                        "#FED976", 200,
+                        "#FEB24C", 400,
+                        "#FD8D3C", 600,
+                        "#FC4E2A", 1000,
+                        "#E31A1C", 1500,
+                        "#BD0026",
+                    ]);
+
+                    $('#year').text('in ' + currentDate_new)
+                    currentDate = currentDate_new
+                } catch (error) {
+
+                }
+
+                dateSliderBox.prop('value', String(value))
+
+            } else {
+                dateSliderBox.prop('value', '0')
+                isAnimationStop = false
+                $('#year').text('in ' + dateStringList[0])
+                currentDate = dateStringList[0]
+            }
+            setTimeout(() => showDataByTime(newValue + 1), 1000)
+        }
+
+        function stopAnimation() {
+            isAnimationStop = true
+            $('#startButton').removeClass('disableClick')
+            $('#startButton').prop('disabled', '')
+        }
+
+        function startAnimaton() {
+            $('#startButton').addClass('disableClick')
+            $('#startButton').prop('disabled', 'disabled')
+            isAnimationStop = false
+            showDataByTime(0)
+        }
+        function selectDate(value) {
+            console.log(value);
+            isAnimationStop = true
+            currentDate = dateStringList[parseInt(value)]
+            dateSliderBox.prop('value', String(value))
+            try {
+
+                myMap.setPaintProperty('BayRegion', 'fill-color', [
+                    "step",
+                    ["get", currentDate],
+                    "#FFEDA0", 100,
+                    "#FED976", 200,
+                    "#FEB24C", 400,
+                    "#FD8D3C", 600,
+                    "#FC4E2A", 1000,
+                    "#E31A1C", 1500,
+                    "#BD0026",
+                ]);
+
+                $('#year').text('in ' + currentDate)
+                currentDate = currentDate
+            } catch (error) {
+
+            }
+            $('#year').text('in' + currentDate)
+        }
+        function createCircleLayer(url, layerName, initField, baseMap) {
+            let XMLHttp;
+            let resultJson;
+            if (window.XMLHttpRequest) {
+                XMLHttp = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                XMLHttp = new window.ActiveXObject();
+            } else {
+                alert("请升级至最新版本的浏览器");
+            }
+            if (XMLHttp != null) {
+                XMLHttp.open("GET", url, true);
+                XMLHttp.send(null);
+                XMLHttp.onreadystatechange = async function () {
+                    if (XMLHttp.readyState == 4 && XMLHttp.status == 200) {
+                        poisDataG = await JSON.parse(XMLHttp.responseText);
+                        // console.log(poisDataG, '0000000000000');
+                        const geometryType = poisDataG.features[0].geometry.type
+                        // console.log(geometryType,'geometryTypegeometryType');
+
+                        const clusterPoi = {
+                            "type": "geojson",
+                            "data": poisDataG,
+                            cluster: true,
+                            clusterMaxZoom: 19, // Max zoom to cluster points on
+                            clusterRadius: 10 // Radius of each cluster when clustering points (defaults to 50)
+                        }
+                        baseMap.addLayer({
+                            'id': layerName,
+                            'type': 'circle',
+                            'source': clusterPoi,
+                            'layout': {
+                                'visibility': 'visible',
+                                // 'text-field': '{point_count}',
+                                // 'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                                // 'text-size': 12
+                            },
+                            filter: ['has', 'point_count'],
+                            paint: {
+                                // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
+                                // with three steps to implement three types of circles:
+                                //   * Blue, 20px circles when point count is less than 100
+                                //   * Yellow, 30px circles when point count is between 100 and 750
+                                //   * Pink, 40px circles when point count is greater than or equal to 750
+                                'circle-color': [
+                                    'step',
+                                    ['get', 'point_count'],
+                                    '#078700', 100,
+                                    '#42E73A', 200,
+                                    '#CFF76F', 400,
+                                    '#FFFC73', 600,
+                                    '#FF3100', 850,
+                                    '#A62000',
+
+                                ],
+                                'circle-radius': 5,
+                            }
+                        });
+                        function addSymbolLayer() {
+                            baseMap.addLayer({
+                                id: layerName + '_label',
+                                type: 'symbol',
+                                source: clusterPoi,
+                                filter: ['has', 'point_count'],
+                                layout: {
+                                    'visibility': 'visible',
+                                    'text-field': '{point_count_abbreviated}',
+                                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                                    'text-size': 20
+                                },
+                                paint: {
+                                    'text-color': '#FFFFFF',
+                                },
+                            });
+                        }
+                        setTimeout(addSymbolLayer, 5000)
+
+
+                    }
+                }
+            }
+
+        }
+
+        async function createFillLayerByUnique(url, layerName, initField, baseMap) {
+            // console.log(url, layerName, initField, baseMap,'=======================');
+            let XMLHttp;
+            let resultJson;
+            if (window.XMLHttpRequest) {
+                XMLHttp = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                XMLHttp = new window.ActiveXObject();
+            } else {
+                alert("请升级至最新版本的浏览器");
+            }
+            if (XMLHttp != null) {
+                XMLHttp.open("GET", url, true);
+                XMLHttp.send(null);
+                XMLHttp.onreadystatechange = async function () {
+                    if (XMLHttp.readyState == 4 && XMLHttp.status == 200) {
+                        const geoObj = await JSON.parse(XMLHttp.responseText);
+                        const geometryType = geoObj.features[0].geometry.type
+                        baseMap.addLayer({
+                            'id': layerName,
+                            'type': 'fill',
+                            'source': {
+                                "type": "geojson",
+                                "data": geoObj
+                            },
+                            // 'layout': {
+                            //     'visibility': 'none'
+                            // },
+                            'paint': {
+                                'fill-color': [
+                                    "match",
+                                    ["get", initField],
+                                    "Very Low", "#9B87F6",
+                                    "Low", "#5E3FE9",
+                                    "Medium", "#BE81F6",
+                                    "High", '#E828D8',
+                                    "#8e9292"
+
+                                ],
+                                'fill-outline-color': '#343434',
+                                'fill-opacity': 0.7
+                            }
+                        });
+                    }
+                };
+
+            }
+            return XMLHttp
+        }
+        async function createFillLayerByOne(url, layerName, initField, baseMap) {
+            // console.log(url, layerName, initField, baseMap,'=======================');
+            let XMLHttp;
+            let resultJson;
+            if (window.XMLHttpRequest) {
+                XMLHttp = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                XMLHttp = new window.ActiveXObject();
+            } else {
+                alert("请升级至最新版本的浏览器");
+            }
+            if (XMLHttp != null) {
+                XMLHttp.open("GET", url, true);
+                XMLHttp.send(null);
+                XMLHttp.onreadystatechange = async function () {
+                    if (XMLHttp.readyState == 4 && XMLHttp.status == 200) {
+                        const geoObj = await JSON.parse(XMLHttp.responseText);
+                        const geometryType = geoObj.features[0].geometry.type
+                        baseMap.addLayer({
+                            'id': layerName,
+                            'type': 'fill',
+                            'source': {
+                                "type": "geojson",
+                                "data": geoObj
+                            },
+                            // 'layout': {
+                            //     'visibility': 'none'
+                            // },
+                            'paint': {
+                                'fill-color': "#360AFB",
+                                'fill-outline-color': '#343434',
+                                'fill-opacity': 0.7
+                            }
+                        });
+                    }
+                };
+
+            }
+            return XMLHttp
+        }
+
+        async function createFillLayerBySteps(url, layerName, initField, baseMap) {
+            // console.log(url, layerName, initField, baseMap,'=======================');
+            let XMLHttp;
+            let resultJson;
+            if (window.XMLHttpRequest) {
+                XMLHttp = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                XMLHttp = new window.ActiveXObject();
+            } else {
+                alert("请升级至最新版本的浏览器");
+            }
+            if (XMLHttp != null) {
+                XMLHttp.open("GET", url, true);
+                XMLHttp.send(null);
+                XMLHttp.onreadystatechange = async function () {
+                    if (XMLHttp.readyState == 4 && XMLHttp.status == 200) {
+                        const geoObj = await JSON.parse(XMLHttp.responseText);
+                        const geometryType = geoObj.features[0].geometry.type
+                        baseMap.addLayer({
+                            'id': layerName,
+                            'type': 'fill',
+                            'source': {
+                                "type": "geojson",
+                                "data": geoObj
+                            },
+                            // 'layout': {
+                            //     'visibility': 'none'
+                            // },
+                            'paint': {
+                                'fill-color': [
+                                    "step",
+                                    ["get", initField],
+                                    "#507AF6",
+                                    0,
+                                    "#2157FA",
+                                    200,
+                                    "#0233C7",
+                                    400,
+                                    "#894DF6",
+                                    600,
+                                    "#894DF6",
+                                    1000,
+                                    "#BD44F6",
+                                    1500,
+                                    "#8601C5",
+                                ],
+                                'fill-outline-color': '#343434',
+                                'fill-opacity': 0.7
+                            }
+                        });
+                    }
+                };
+
+            }
+            return XMLHttp
+        }
+
+
+        async function createLineLayerByUnique(url, layerName, initField, baseMap) {
+            // console.log(url, layerName, initField, baseMap,'=======================');
+            let XMLHttp;
+            let resultJson;
+            if (window.XMLHttpRequest) {
+                XMLHttp = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                XMLHttp = new window.ActiveXObject();
+            } else {
+                alert("请升级至最新版本的浏览器");
+            }
+            if (XMLHttp != null) {
+                XMLHttp.open("GET", url, true);
+                XMLHttp.send(null);
+                XMLHttp.onreadystatechange = async function () {
+                    if (XMLHttp.readyState == 4 && XMLHttp.status == 200) {
+                        const geoObj = await JSON.parse(XMLHttp.responseText);
+                        const geometryType = geoObj.features[0].geometry.type
+                        baseMap.addLayer({
+                            'id': layerName,
+                            'type': 'line',
+                            'source': {
+                                "type": "geojson",
+                                "data": geoObj
+                            },
+                            'layout': {
+                                "line-join": "round",
+                                "line-cap": "round"
+                            },
+                            'paint': {
+                                "line-color": "#05aaf7",
+                                "line-width": 2,
+                                // 'fill-color': [
+                                //     "step",
+                                //     ["get", initField],
+                                //     "#FFEDA0",
+                                //     0,
+                                //     "#FED976",
+                                //     200,
+                                //     "#FEB24C",
+                                //     400,
+                                //     "#FD8D3C",
+                                //     600,
+                                //     "#FC4E2A",
+                                //     1000,
+                                //     "#E31A1C",
+                                //     1500,
+                                //     "#BD0026",
+                                // ],
+                            }
+                        });
+                    }
+                };
+
+            }
+            return XMLHttp
+        }
+
+
+        function createSymbolLayer(url, layerName, initField, baseMap) {
+            let XMLHttp;
+            let resultJson;
+            if (window.XMLHttpRequest) {
+                XMLHttp = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                XMLHttp = new window.ActiveXObject();
+            } else {
+                alert("请升级至最新版本的浏览器");
+            }
+            if (XMLHttp != null) {
+                XMLHttp.open("GET", url, true);
+                XMLHttp.send(null);
+                XMLHttp.onreadystatechange = async function () {
+                    if (XMLHttp.readyState == 4 && XMLHttp.status == 200) {
+                        const geoObj = await JSON.parse(XMLHttp.responseText);
+                        // console.log(geoObj, '0000000000000');
+                        const geometryType = geoObj.features[0].geometry.type
+                        // console.log(geometryType,'geometryTypegeometryType');
+                        if (geometryType === 'Point') {
+                            const clusterPoi = {
+                                "type": "geojson",
+                                "data": geoObj,
+                                cluster: true,
+                                clusterMaxZoom: 19, // Max zoom to cluster points on
+                                clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+                            }
+                            function addSymbolLayer() {
+                                baseMap.addLayer({
+                                    id: layerName + '_label',
+                                    type: 'symbol',
+                                    source: clusterPoi,
+                                    filter: ['has', 'point_count'],
+                                    layout: {
+                                        'text-field': '{point_count_abbreviated}',
+                                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                                        'text-size': 24
+                                    },
+                                });
+                            }
+                            setTimeout(addSymbolLayer, 5000)
+                        }
+
+                    }
+                };
+
+            }
+            return XMLHttp
+        }
+
+        function createSliderTimeList() {
+            let dateList = []
+            for (let year = 1996; year < 2017; year++) {
+                for (let morth = 1; morth < 12; morth++) {
+                    if (year == 1996 && morth < 4) {
+                        console.log(`${year}-0${morth}`);
+                    } else if (year == 2017 && morth > 9) {
+                        console.log(`${year}-${morth}`);
+                    } else {
+                        if (morth < 10) {
+                            dateList.push(`${year}-0${morth}`)
+                        } else {
+                            dateList.push(`${year}-${morth}`)
+                        }
+                    }
+
+                }
+            }
+            return dateList
+        }
+
+        async function onSelectLayers(value) {
+            const checkbox = $(`#${value}_check`)
+            const isVisible = checkbox.prop('checked')
+            console.log(isVisible, 'isVisible');
+            if (isVisible === false) {
+                removeClearLayersSource([value])
+
+            } else if (isVisible === true) {
+                if (value === 'RiskFromRS') {
+                    await createFillLayerByUnique('./statics/Risk_of_Flooding_from_Rivers_and_Sea.geojson', 'RiskFromRS', 'prob_4band', myMap)
+
+                } else if (value === 'FloodDefences') {
+                    await createLineLayerByUnique('./statics/Spatial_Flood_Defences_Including_Standardised_Attributes.geojson', 'FloodDefences', 'protection', myMap)
+                }
+                else if (value === 'HistoricFlood') {
+                    await createFillLayerBySteps('./statics/Historic_Flood_Map.geojson', 'HistoricFlood', 'st_area_sh', myMap)
+                }
+                else if (value === 'RecordedFloodOutlines') {
+                    await createFillLayerByOne('./statics/Recorded_Flood_Outlines.geojson', 'RecordedFloodOutlines', 'st_area_sh', myMap)
+                }
+                else if (value === 'ROFRSLondon') {
+                    await createFillLayerByUnique('./statics/ROFRS_London.geojson', 'ROFRSLondon', "PROB_4BAND", myMap)
+
+                }
+
+            }
+            // myMap.setLayoutProperty(value, 'visibility', isVisible === false ? 'none' : 'visible');
+        }
+        // 移除图层
+        function removeClearLayersSource(layerNameList) {
+            for (let layer_index = 0; layer_index < layerNameList.length; layer_index++) {
+                const layerName = layerNameList[layer_index]
+                myMap.removeLayer(layerName)
+                myMap.removeSource(layerName)
+               
+
+            }
+        }
+
+
+        function onChangeFieldColors(value) {
+
+            const layerNameFieldList = value.split(',')
+            const layerName = layerNameFieldList[0]
+            const field = layerNameFieldList[1]
+            console.log(layerName, field, 'valuevaluevaluevaluevalue');
+            if (layerName == 'FloodDefences') {
+                if (field == 'effective_') {
+                    myMap.setPaintProperty(layerName, 'line-color', [
+                        "step",
+                        ["get", field],
+                        "#FFEDA0", 50,
+                        "#FED976", 100,
+                        "#FEB24C", 150,
+                        "#FD8D3C", 200,
+                        "#FC4E2A", 250,
+                        "#E31A1C", 300,
+                        "#BD0026",
+                    ]);
+
+                }
+
+            } else if (layerName == '') {
+
+            }
+
+        }
+
+
+    </script>
+
+
+
+
+</body>
+<grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration>
+
+</html>
