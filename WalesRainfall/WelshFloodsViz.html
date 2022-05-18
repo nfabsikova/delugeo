@@ -6,23 +6,73 @@
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
     
-    <!-- <link href="cartofiles/styles.css" rel="stylesheet"> -->
+    
+    <!--<link href="cartofiles/styles.css" rel="stylesheet">-->
     <link href="https://carto.com/developers/carto-vl/v1.4.4/examples/maps/style.css" rel="stylesheet">
     
 <style>
     aside.toolbox { /* Specify some extra stuff for all asides of class 'toolbox' */
-        max-width: 400px;
+        width: 35px;
     }
     .axis--y .domain {
         display: none;
     }
     #slidersection {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
     }
+    .map-overlay {
+        font: 12px/20px "Times New Roman", Times, serif;
+        width: 30%;
+        height: 80%;
+        padding: 10px;
+        padding-left: 40px;
+		}
+
+    .map-overlay .map-overlay-inner1 {
+        background-color: #fff;
+        box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+        width: 100%;
+        border-radius: 4px;
+        /*margin-bottom: 10px;*/
+        padding: 5px;
+        opacity: 0.8;
+        /*padding-bottom: 1px;*/
+    }
+
+    .darkblue {
+        color: #434e87;
+    }
+
+    .darkgreen {
+        color: darkgreen;
+    }
+
+    #js-play-button {
+        opacity: 1;
+        background: url('./play.svg') no-repeat;
+        background-color: #1785FB;
+        background-position: center;
+    }
+
+    #js-pause-button {
+        opacity: 1;
+        background: url('./pause.svg') no-repeat;
+        background-color: #1785FB;
+        background-position: center;
+        height: 30;
+    }
+
+    #js-current-time {
+        font-size: 18px;
+    }
+
+    #text {
+        font-size: 10px;
+    }
+    
 </style>  
     
 </head>
@@ -33,29 +83,37 @@
     <aside class="toolbox"> <!--Classes from carto CSS-->
         <div class="box">
             <header>
-                <h1>Rainfall and Floods in Wales</h1> <!--TITLE-->
+                <h1 id="Title"><span class='darkblue'>Rainfall</span> and <span class='darkgreen'>Flooding</span> in North Wales</h1>
             </header>
             <section> <!--DESCRIPTION-->
                 <p class="description open-sans"><!--Data Sources: <a href="https://www.microsoft.com/en-us/download/details.aspx?id=52367&from=https%3A%2F%2Fresearch.microsoft.com%2Fen-us%2Fdownloads%2Fb16d359d-d164-469e-9fd4-daa38f2b2e13%2F">Zheng et al. 2012</a>, Microsoft Research Asia. Visualisation by <a href="https://www.ucl.ac.uk/bartlett/casa/dr-duncan-smith">D A Smith</a> using <a href="https://carto.com/developers/carto-vl/v0.10.0">Carto VL</a>.</p>-->
             </p>
             </section>
-            <section style="margin-top: 15px;"> <!--I think the horizontal line is part of being a section-->
-                <input type="button" id="js-play-button"> <!--'js-play-button' is simply the name of a button input-->
-                <input type="button" id="js-pause-button"> <!--'js-play-button' is another button input-->
-                <span id="js-current-time" class="open-sans"></span> <!--A placeholder for the current time-->
-            </section>
+
             <section>
                 <div id="controls">
                     <table id="content"></table>
-                </div>
-                <div>
-                    <select name="months" id="month_selector"></select>
                 </div>
             </section>
         </div>
     </aside>
 
     <div id="slidersection">
+
+        <div class='map-overlay'> <!--Overlay and Overlay-Inner allows padding around the text boxes-->
+            <div class="map-overlay-inner1">
+            <!--use <span> and classes from the CSS to change colour of individual words-->
+                <section> <!--I think the horizontal line is part of being a section-->
+                    <p>
+                        <input type="button" id="js-play-button"> <!--'js-play-button' is simply the name of a button input-->
+                        <input type="button" id="js-pause-button"> <!--'js-play-button' is another button input-->
+                        <!--A placeholder for the current time-->
+                        <span id="js-current-time"></span><br>
+                        <select name="months" id="month_selector"></select>
+                    </p>
+                </section>
+            </div> 
+        </div>
         <section>
             <svg width="700" height="400"></svg>
         </section>
@@ -150,7 +208,7 @@
             .attr("transform", "translate(" + margin.left + ",0)") // Move it to the correct position
             .call(d3.axisLeft(y).tickValues([])); // Apply this to the axis, based on the specified 'scale' and ticks
 
-        d3.json("rainfall_monthtime.json", function(error, data) { // Load the data, and run the following function with 'rainfall' as the output
+        d3.json("Data/rainfall_monthtime.json", function(error, data) { // Load the data, and run the following function with 'rainfall' as the output
 
             if (error) throw error; // ...assuming no errors
 
@@ -258,8 +316,8 @@
 
             //Navigation controls
             const nav = new mapboxgl.NavigationControl(); //Navigation control object created
-            map.addControl(nav, 'top-left'); //...then placed in the top left
-            map.addControl(new mapboxgl.FullscreenControl(), 'top-left'); //This one is done all in one go
+            map.addControl(nav, 'bottom-right'); //...then placed in the top left
+            map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right'); //This one is done all in one go
 
             //** CARTO VL functionality begins here **//
 
@@ -320,7 +378,7 @@
 
             const rain_layer = new carto.Layer('rain_layer', rain_source, rain_viz);
 
-            const flood_source = new carto.source.Dataset('welsh_floods_simple');
+            const flood_source = new carto.source.Dataset('welshfloods');
 
             const flood_viz = new carto.Viz(`
                     @anim_input: linear($middle_date, ${time_start}, ${time_end})
@@ -328,7 +386,7 @@
                     @animation: animation(@anim_input, ${duration}, fade(0.3, 1))
                     filter: @animation
                     color: turquoise
-                    strokeColor: red
+                    strokeColor: darkgreen
                     strokeWidth: 2.5
                     `);
 
@@ -482,29 +540,16 @@
                 legend_elements += `
                             <tr>
                                 <td>
-                                    Floods
+                                    <br>Floods
                                 </td>
                                 <td>
-                                    <li
+                                    <br><li
                                         class="polygon-mark"
                                         style='
                                             background-color: ${flood_layer.viz.color};
                                             width: 40px;
                                             border: 2px solid ${flood_layer.viz.strokeColor};'>
                                     </li>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Mountains
-                                </td>
-                                <td>
-                                    <span
-                                        class="image-mark"
-                                        style='
-                                            mask-image: Triangle;
-                                            background-color: brown;'>
-                                    </span>
                                 </td>
                             </tr>`;
 

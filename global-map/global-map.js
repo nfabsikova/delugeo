@@ -198,23 +198,38 @@ document.getElementById('deaths-legend').addEventListener('mouseover', function(
   minDeathFilter = ['>=', ['get', 'Dead'], minDeaths];
   maxDeathFilter = ['<=', ['get', 'Dead'], maxDeaths]
 
-  
+  //update layer styling
+
 
   if (document.getElementById('button').disabled) {
-    map.setFilter('floods', ['all', minDeathFilter, maxDeathFilter])
+    if (minDeaths == 1000 | minDeaths == 100000) {
+      console.log('hello')
+        map.setPaintProperty('floods', 'circle-opacity', 0.8)
+    }
+    setTimeout(function(){
+      map.setFilter('floods', ['all', minDeathFilter, maxDeathFilter])
+    },150);
+
   } else {
     let filteredYear = parseInt(document.getElementById('slider').value);
     let yearFilter = ['==', ['number', ['get', 'year']], filteredYear]
     
     map.setFilter('floods', ['all', yearFilter, minDeathFilter, maxDeathFilter]);
+
   }
-}
-)
+})
 
 document.getElementById('deaths-legend').addEventListener('mouseleave', function(e) {
 
+
   if (document.getElementById('button').disabled) {
-    map.setFilter('floods');
+    map.setPaintProperty('floods', 'circle-opacity', 0.35)
+    
+    setTimeout(function(){
+      map.setFilter('floods');
+    },150);
+
+
   } else {
     let filteredYear = parseInt(document.getElementById('slider').value);
     map.setFilter('floods', ['==', ['number', ['get', 'year']], filteredYear]);

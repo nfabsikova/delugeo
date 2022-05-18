@@ -221,13 +221,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
           'Netherlands',
           'Cambodia',
           'Thailand'
-        ]
+        ],
+        labels: {
+          style: {
+            fontSize: '14px'
+          },
+          y: 25
+        }
     },
     yAxis: {
         min: 0,
         title: {
-            text: 'Average'
+          text: 'Average',
+          margin: 20,
+          style: {
+            fontSize: '18px',
+          }
+      },
+      labels: {
+        style: {
+          fontSize: '12px'
         }
+      }
     },
     legend: {
       enabled: false
