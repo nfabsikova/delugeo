@@ -7,10 +7,16 @@
         <meta name="author" content="" />
         <title>Delugeo</title>
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+
         <!-- Libraries-->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/annotations.js"></script>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+
         <!-- Font-->
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Work+Sans:wght@300;700&display=swap');        </style>
@@ -27,10 +33,10 @@
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item"><a class="nav-link" href="#intro">Intro</a></li>
                         <li class="nav-item"><a class="nav-link" href="#history">Global</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#rainfall">Rainfall</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#vulnerability">Vulnerability</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#defence">Defences</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#ar">AR</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#rainfall">Natural</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#vulnerability">Social</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#defence">Infrastructural</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#ar">Personal</a></li>
                     </ul>
                 </div>
             </div>
@@ -46,46 +52,53 @@
         </header>
         <!-- About section-->
         <section id="intro">
-            <div class="container px-4">
+            <div class="container px-4" style="margin: auto;">
                 <div class="row gx-4 justify-content-center">
                     <div class="col-lg-8 container">
-                        <h2>Introduction</h2>
-                        <br>
+                        <h1>Welcome to <i>Delugeo</i>!</h1>
                         <!-- <p class="lead">This is a great place to talk about your webpage. This template is purposefully unstyled so you can use it as a boilerplate or starting point for you own landing page designs! This template features:</p> -->
                         <p style="max-width:80%">
-                          The research question guiding this project is: <b>how do rainfall, flood defenses, and social factors  influence vulnerability to flooding</b> with the UK as the case study. 
-                          <br><br>
-                          Why the UK as the case study? We started by exploring global flooding trends in the last 40 years, using a global archive of large-scale flood events from the Dartmouth Flood Observatory<sup>[<a>1</a>]</sup>. Firstly, the data shows that the number of floods has no significant trend over this time period, apart from a peak in the early 2000s. However, the severity, which is a measure of flood extent, damage, and fatalities, has a clear upward trend. This raises questions about other factors which increase flood vulnerability - perhaps their unpredictability, their scale, and also about related human factors such as population concentrations in flood-prone areas and the ability of communities to respond.
-                      </p>
+                          Flooding is an ever-growing global concern, particularly in the UK. England sustains around £1.5 billion of damage each year from flooding, directly or indirectly, according to a 2015 report by Sayers and Partners<sup>[<a href="https://www.theccc.org.uk/wp-content/uploads/2015/10/CCRA-Future-Flooding-Main-Report-Final-06Oct2015.pdf.pdf" target="_blank">1</a>]</sup>, with 1.4 million people living in houses with a 12.5% likelihood of being flooded during a 10-year period<sup>[<a href="https://www.theccc.org.uk/publication/progress-in-preparing-for-climate-change-2019-progress-report-to-parliament/" target="_blank">2</a>]</sup>.
+                        <br><br>Use <i>Delugeo</i> to explore UK flooding vulnerability from five perspectives: the global, the natural, the social, the infrastructural, and the personal.
+                        </p>
+                        <br>
+                        <h2>Flooding - A Global Overview</h2>
+                        <p style="max-width:80%">
+                          This graph shows global trends using data from archive of large-scale flood events from the Dartmouth Flood Observatory<sup>[<a href="https://floodobservatory.colorado.edu/Archives/index.html" target="_blank">3</a>]</sup>. 
+                          Note that whilst the number of floods varies over this time period, the severity (which measures flood extent, damage, and fatalities), has a clear upward trend.
+                          <br><br><i>Why are floods becoming more severe socially? Are floods becoming larger or more unpredictable? Are populations becoming more densely populated and less able to cope?</i>
+                        </p>                      
                       <br>
                         <div class="row">
                           <div class="col">
                             <div id="chart-container1" style="width:100%; height:400px;"></div>
                             <p class="credits">Source: Dartmouth Flood Observatory</p>
                           </div>
-                          <div class="col btn-container" style="max-width:20%;">
-                            <button type="button" class="btn btn-lg btn-secondary" id="chart1-btn-floods" focus>Floods</button><br>
-                            <button type="button" class="btn btn-lg btn-secondary" id="chart1-btn-severity">Severity</button><br>
-                            <button type="button" class="btn btn-lg btn-secondary" id="chart1-btn-deaths">Dead</button><br>
-                            <button type="button" class="btn btn-lg btn-secondary" id="chart1-btn-displaced">Displaced</button><br>
+                          <div class="col btn-container" id="btn-container-1">
+                            <button type="button" class="btn btn-lg btn-secondary" id="chart1-btn-floods" focus>Floods</button>
+                            <button type="button" class="btn btn-lg btn-secondary" id="chart1-btn-severity">Severity</button>
+                            <button type="button" class="btn btn-lg btn-secondary" id="chart1-btn-deaths">Dead</button>
+                            <button type="button" class="btn btn-lg btn-secondary" id="chart1-btn-displaced">Displaced</button>
                           </div>
                           
                         </div>
 
                         <br><br>
                         <p style="max-width:80%">
-                          Secondly, looking at the data by country, it is clear that the UK has some interesting characteristics. The UK has a very high average number of people exposed per flood, compared to other countries. However, when it comes to deaths per flood, the UK scores remarkably low scores compared to others. We therefore sought to investigate what causes the UK’s high exposure levels, and also how has the UK got such a low death rate despite high exposure.
-                      </p>
+                          Looking at the data by country, the UK has some interesting characteristics. Note the very high average number of people exposed per flood, compared to other countries. However, when it comes to deaths per flood, the UK scores remarkably low, even when compared to OECD countries only.                      </p>
                       <br>
                         <div class="row">
                           <div class="col">
                             <div id="chart-container2" style="width:100%; height:400px;"></div>
                             <p class="credits">Source: Dartmouth Flood Observatory, Global Flood Database</p>
                           </div>
-                          <div class="col btn-container" style="max-width:20%;">
-                            <button type="button" class="btn btn-lg btn-secondary" id="chart2-btn-exposed">Exposed</button><br>
-                            <button type="button" class="btn btn-lg btn-secondary" id="chart2-btn-deaths" focus>Dead</button><br>
-                            <button type="button" class="btn btn-lg btn-secondary" id="chart2-btn-displaced">Displaced</button><br>
+                          <div class="col btn-container" id="btn-container-2">
+                            <label for="oecd">
+                              <input type="checkbox" id="chart2-cbx-oecd" name="oced" value="yes" style="margin-left:10px;">   Show only OECD countries
+                           </label>
+                            <button type="button" class="btn btn-lg btn-secondary" id="chart2-btn-exposed">Exposed</button>
+                            <button type="button" class="btn btn-lg btn-secondary" id="chart2-btn-deaths" focus>Dead</button>
+                            <button type="button" class="btn btn-lg btn-secondary" id="chart2-btn-displaced">Displaced</button>
                           </div>
                           
                         </div>
@@ -100,9 +113,10 @@
                 <div class="col-lg-8 container">
                   <div class="row">
                     <div class="col">
+                      <h5><i>How does the UK fit into the global context?</i></h5>
                       <h2>Global Overview</h2>
                       <p>
-                        To situate flooding in the UK into the global context, the first visualisation provides a global overview of large flood events occuring since 1985 based on data from Dartmouth Flood Observatory’s active archive<sup>[2]</sup>. The archive constitutes the most extensive database of large flood events with a global coverage, even though some information might be inaccurate due to the fact a large share of the information comes from news sources. Large flooding events are defined as those inflicting significant damage to structures or agriculture or causing fatalities. The visualisation allows users to see the global flooding trends, as well as to zoom in and explore specific flooding events in more detail.b 
+                        To situate flooding in the UK into the global context, the first visualisation provides a global overview of large flood events occuring since 1985 based on data from Dartmouth Flood Observatory’s active archive<sup>[<a href="https://floodobservatory.colorado.edu/Archives/index.html" target="_blank">4</a>]</sup>. The archive constitutes the most extensive database of large flood events with a global coverage, even though some information might be inaccurate due to the fact a large share of the information comes from news sources. Large flooding events are defined as those inflicting significant damage to structures or agriculture or causing fatalities. The visualisation allows users to see the global flooding trends, as well as to zoom in and explore specific flooding events in more detail.
                       </p>
                       <button type="button" class="btn btn-lg btn-col" onclick="window.open('global-map/global-map.html','_blank')">Explore</button>
                     </div>
@@ -123,10 +137,11 @@
                         <img src="assets/rainfall.png" width = "500px">
                        </div>
                       <div class="col">
-                        <h2>Exposure to Flooding</h2>
+                        <h5><i>Why is the UK so exposed?</i></h5>
+                        <h2>Increasing Rainfall</h2>
                         <p>
-                          According to Sir James Bevan, Chief Executive of the Environment Agency<sup>[<a href="https://www.gov.uk/government/news/surface-water-the-biggest-flood-risk-of-all">3</a>]</sup>, high levels of exposure to surface-water flooding in the UK is the result of at least three factors. First, an increasing population, and so more people at risk. Second, an increasing proportion of surfaces covered in impermeable concrete.
-                          Thirdly, an increase in rainfall. There has been a notable increase in the number of daily rainfall totals exceeding 50mm since 1960, with a 17% increase in extremely wet days between the periods 1960-1990 and 2008-2017<sup>[<a href="https://www.sciencedirect.com/science/article/pii/S2212094721000372">4</a>]</sup>. 
+                          According to Sir James Bevan, Chief Executive of the Environment Agency<sup>[<a href="https://www.gov.uk/government/news/surface-water-the-biggest-flood-risk-of-all" target="_blank">5</a>]</sup>, high levels of exposure to surface-water flooding in the UK is the result of at least three factors. First, an increasing population, and so more people at risk. Second, an increasing proportion of surfaces covered in impermeable concrete.
+                          Thirdly, an increase in rainfall. There has been a notable increase in the number of daily rainfall totals exceeding 50mm since 1960, with a 17% increase in extremely wet days between the periods 1960-1990 and 2008-2017<sup>[<a href="https://www.sciencedirect.com/science/article/pii/S2212094721000372" target="_blank">6</a>]</sup>. 
                         </p>
                         <p>
                           Use this tool to explore the trends of extreme rainfall at the regional scale of North Wales over the last 80 years. Note that whilst there is large variation in the trends for individual month, there is a noticeable increase in extreme rainfall events when all months are considered. Though the increase is gradual, the MET office anticipates that rainfall will like continue to steadily increase due to global warming and put an increasing pressure on society, demanding ever increasing funding, precautions, and anticipation.
@@ -149,6 +164,7 @@
                     <div class="col-lg-8 container">
                         <div class="row">
                           <div class="col">
+                            <h5><i>How is the UK population impacted by these floods?</i></h5>
                             <h2>Population Vulnerability</h2>
                             <p>
                               How badly people will be affected will depend not just on their exposure to the floods, but on their social vulnerability – that is, how well they are able to cope with and respond to events. Social vulnerability relates to: 
@@ -178,7 +194,8 @@
                           <img src="assets/london_risk.png" width = "500px" style="margin-top:30px;">
                          </div>
                         <div class="col">
-                          <h2>Local Flood Defences</h2>
+                          <h5><i>How is the UK responding to this risk?</i></h5>
+                          <h2>Local Flood Defenses</h2>
                           <p>
                             In London, 1.25 million people live and work in areas with flood risk from river and sea. Another 165,000 people are at medium risk of flooding from rainfall. Because London is located in the low-lying plain area of the river mouth, it is threatened by multiple floods from rivers, oceans and rainstorms. It has experienced many major floods in history, and the flood control pressure of the city is also on the rise in the future. The London flood defence system was established in 1982, and has been continuously upgraded and expanded until now. 
                             The visualization presents data about London historical flood, the at flood risk areas and all flood defense facilities.
@@ -197,7 +214,8 @@
                 <div class="col-lg-8 container">
                     <div class="row">
                       <div class="col">
-                        <h2>Am I at Risk?</h2>
+                        <h5><i>Am I at Risk?</i></h5>
+                        <h2>Flood Risk AR</h2>
                         <p>
                           The augmented reality (AR) web application shows which flood risk zone the current location is in. Acquiring GPS location information from your smartphone, the app allows you to interactively check the flood zone, flood alert and flooded history of the locations around you. For flood zones, <em>Very Low</em> means less than 0.1% of flood probability for a year; <em>Low</em>: 0.1-1%; <em>Medium</em>: 1-3.3%; <em>High</em>: more than 3.3%. The app performs well in smartphone uses both of iOS and Android OS.
                         </p>
