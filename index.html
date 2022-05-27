@@ -19,7 +19,8 @@
 
         <!-- Font-->
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Work+Sans:wght@300;700&display=swap');        </style>
+            @import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Work+Sans:wght@300;700&display=swap');        
+        </style>
         
 
     </head>
@@ -107,6 +108,8 @@
                 </div>
             </div>
         </section>
+
+        <!-- Global section-->
         <section class="bg-light" id="history">
           <div class="container px-4">
               <div class="row gx-4 justify-content-center">
@@ -121,20 +124,21 @@
                       <button type="button" class="btn btn-lg btn-col" onclick="window.open('global-map/global-map.html','_blank')">Explore</button>
                     </div>
                     <div class="col">
-                     <img src="assets/map.png" width = "500px" style="margin-left:50px;margin-top:30px">
+                     <img src="assets/section-images/02_global.png" width = "500px" style="margin-left:50px;margin-top:30px">
                     </div>
                   </div>
               </div>
           </div>
       </section>
-        <!-- Services section-->
+
+        <!-- Natural section-->
         <section  id="rainfall">
             <div class="container px-4">
                 <div class="row gx-4 justify-content-center">
                   <div class="col-lg-8 container">
                     <div class="row">
                       <div class="col">
-                        <img src="assets/rainfall.png" width = "500px">
+                        <img src="assets/section-images/03_natural.png" width = "500px">
                        </div>
                       <div class="col">
                         <h5><i>Why is the UK so exposed?</i></h5>
@@ -152,46 +156,45 @@
                 </div>
             </div>
         </section>
-        <!-- Vulnerability section-->
+
+        <!-- Social section-->
         <section class="bg-light" id="vulnerability">
             <div class="container px-4">
                 <div class="row gx-4 justify-content-center">
-                    <!-- <div class="col-lg-8">
-                        <h2>Global vulnerabilities</h2>
-                        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero odio fugiat voluptatem dolor, provident officiis, id iusto! Obcaecati incidunt, qui nihil beatae magnam et repudiandae ipsa exercitationem, in, quo totam.</p>
-                    </div> -->
-
                     <div class="col-lg-8 container">
                         <div class="row">
                           <div class="col">
                             <h5><i>How is the UK population impacted by these floods?</i></h5>
                             <h2>Population Vulnerability</h2>
                             <p>
-                              How badly people will be affected will depend not just on their exposure to the floods, but on their social vulnerability – that is, how well they are able to cope with and respond to events. Social vulnerability relates to: 
+                              How badly people will be affected will depend not just on their exposure to the floods, but on their social vulnerability – that is, how well they are able to cope with and respond to events. 
+
+                              Social vulnerability relates to<sup>[<a href="https://www.climatejust.org.uk/who-vulnerable">7</a>]</sup>:
                               <ul>
-                                <li>Personal features of the individual, such as age and health, which affect sensitivity to climate impacts</li>
-                                <li>Environmental characteristics, such as quality of housing stock or elevation of buildings, which can increase or offset exposure to flooding or heat</li>
-                                <li>Social and institutional context, such as levels of inequality and income, the strength of social networks, which affect people’s ability to adapt</li>
+                                <li>Personal features of the individual, which affect sensitivity to climate impacts</li>
+                                <li>Environmental characteristics, which can increase or offset exposure to flooding or heat</li>
+                                <li>Social and institutional context, which affect people’s ability to adapt</li>
                               </ul>
-                              The map plots the indices of different aspects of vulnerability in various output areas in the UK. The performance of regions in different aspects of vulnerabilities is shown, for analyzing the source of their vulnerabilities and comparing the situation between cities. Different categorical indices represent different coping abilities in the face of floods, thus reflecting in what way and to what extent a local area is socially vulnerable.
-                            </p>
-                            <button type="button" onclick="window.open('vulnerability.html','_blank')" class="btn btn-lg btn-col">Explore</button>
+                              The map plots the indices of different social aspects of vulnerability to floods in various output areas in the UK, for analyzing the source of population vulnerability. Urban areas and population density are provided as additional insights. Categorical indices represent different coping abilities in the face of floods, thus reflecting in what way and to what extent a local area is socially vulnerable.
+                              </p>
+                            <button type="button" onclick="window.open('04_social/population_vulnerability.html','_blank')" class="btn btn-lg btn-col">Explore</button>
                           </div>
                           <div class="col">
-                            <img src="assets/vulnerability.png" width = "500px" style="margin-top:30px;margin-left:50px;">
+                            <img src="assets/section-images/04_social.png" width = "500px" style="margin-top:30px;margin-left:50px;">
                            </div>
                         </div>
                 </div>
             </div>
         </section>
-        <!-- Local Flood Defenses section-->
+
+        <!-- Infrastructural section-->
         <section id="defence">
           <div class="container px-4">
               <div class="row gx-4 justify-content-center">
                   <div class="col-lg-8 container">
                       <div class="row">
                         <div class="col">
-                          <img src="assets/london_risk.png" width = "500px" style="margin-top:30px;">
+                          <img src="assets/section-images/05_infrastructural.png" width = "500px" style="margin-top:30px;">
                          </div>
                         <div class="col">
                           <h5><i>How is the UK responding to this risk?</i></h5>
@@ -222,7 +225,7 @@
                         <button type="button" onclick="window.open('https://s-n-b-n.github.io/a/a','_blank')" class="btn btn-lg btn-col">Explore</button>
                       </div>
                       <div class="col">
-                        <img src="assets/ar.png" width = "500px" style="margin-left:50px;">
+                        <img src="assets/section-images/06_personal.png" width = "500px" style="margin-left:50px;">
                         </div>
                     </div>
             </div>
@@ -236,6 +239,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
-        <script src="js/intro-charts.js"></script>
+        <script src="01_intro/intro-charts.js"></script>
     </body>
 </html>

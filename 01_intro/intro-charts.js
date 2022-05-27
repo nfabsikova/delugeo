@@ -1,3 +1,26 @@
+//responsive buttons
+$(window).resize(function() {
+  if ($(window).width() < 1000) {
+    $('#btn-container-1').removeClass('btn-container');
+    $('#btn-container-1').addClass('btn-container-horizontal');
+  } else {
+    $('#btn-container-1').addClass('btn-container');
+    $('#btn-container-1').removeClass('btn-container-horizontal');
+  }
+});
+
+$(window).resize(function() {
+  if ($(window).width() < 1000) {
+    $('#btn-container-2').removeClass('btn-container');
+    $('#btn-container-2').addClass('btn-container-horizontal');
+  } else {
+    $('#btn-container-2').addClass('btn-container');
+    $('#btn-container-2').removeClass('btn-container-horizontal');
+  }
+});
+
+
+//number format
 const f = d3.format(",.2f")
 
 //Global chart options
@@ -12,9 +35,8 @@ Highcharts.setOptions({
 // *** CHART 1 ***
 document.addEventListener('DOMContentLoaded', (event) => {
 
-  d3.csv('data/chart1-data.csv', d3.autoType)
+  d3.csv('01_intro/data/chart1-data.csv', d3.autoType)
   .then(function(data) {
-    console.log(data.map(x => x.floods))
 
     //load first chart and style settings
     const chart = Highcharts.chart('chart-container1', {
@@ -341,10 +363,9 @@ function updateChart2 (chart, chartData, title) {
   });
 }
 
-
 document.addEventListener('DOMContentLoaded', (event) => {
 
-  d3.csv('data/chart2-data.csv', d3.autoType)
+  d3.csv('01_intro/data/chart2-data.csv', d3.autoType)
   .then(function(data) {
 
     let filter = false;

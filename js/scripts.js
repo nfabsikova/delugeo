@@ -33,23 +33,3 @@ window.addEventListener('DOMContentLoaded', event => {
 
 });
 
-//make intro charts button responsive
-$(window).resize(function() {
-  if ($(window).width() < 1000) {
-    $('#btn-container-1').removeClass('btn-container');
-    $('#btn-container-1').addClass('btn-container-horizontal');
-  } else {
-    $('#btn-container-1').addClass('btn-container');
-    $('#btn-container-1').removeClass('btn-container-horizontal');
-  }
-});
-
-$(window).resize(function() {
-  if ($(window).width() < 1000) {
-    $('#btn-container-2').removeClass('btn-container');
-    $('#btn-container-2').addClass('btn-container-horizontal');
-  } else {
-    $('#btn-container-2').addClass('btn-container');
-    $('#btn-container-2').removeClass('btn-container-horizontal');
-  }
-});
