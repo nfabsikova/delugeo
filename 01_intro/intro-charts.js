@@ -387,6 +387,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
             fontWeight: 700
           }
       },
+      subtitle: {
+        align: 'left',
+          margin: 35,
+          style: {
+            fontSize: '14px',
+          },
+          text: '*the chart shows the top 10 countries'
+      },
       xAxis: {
           categories: chartData.categories.slice(0, 10),
           labels: {
