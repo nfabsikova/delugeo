@@ -1,0 +1,9 @@
+Data = [{"index":0,"date":"2021-01-04 0:00","postcode":"E5 0AP","latitude":51.551244707290365,"longitude":-0.07516610838398041,"NAME":"Test1"},
+    {"index":1,"date":"2022-05-16 0:00","postcode":"WC1H 0AW","latitude":51.52408052258338, "longitude":-0.1326345508966615, "NAME":"UCL"},
+    {"index":2,"date":"2022-05-16 0:00","postcode":"WC2R 2ND","latitude":51.511776256464664, "longitude":-0.11474135330361984, "NAME":"Toklas"},
+    {"index":3,"date":"2022-05-16 0:00","postcode":"WC2R 2PH","latitude":51.511035088819284, "longitude":-0.1142210053029468, "NAME":"Temple Station"},
+    {"index":4,"date":"2022-05-16 0:00","postcode":"WC2R 0RN","latitude":51.510627775353704, "longitude":-0.11702123124375785, "NAME":"Somerset House"},
+    {"index":5,"date":"2022-05-16 0:00","postcode":"WC2R 0EZ","latitude":51.510120297722175, "longitude":-0.12042763672482784, "NAME":"The Savoy"},
+    {"index":6,"date":"2022-05-16 0:00","postcode":"WC2N 6AT","latitude":51.50894172592066, "longitude":-0.12104454482470446, "NAME":"Memorial Garden"},
+    {"index":7,"date":"2022-05-16 0:00","postcode":"WC2N 6NS","latitude":51.50737247532374, "longitude":-0.12214425050265756, "NAME":"Embankment Station"},
+    {"index":8,"date":"2022-05-16 0:00","postcode":"WC2N 5DN","latitude":51.507713040686134, "longitude":-0.12754085473150442, "NAME":"Trafalgar Square"},]
