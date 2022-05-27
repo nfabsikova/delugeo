@@ -61,7 +61,7 @@ map.on('load', function() {
       'visibility': 'visible'
     },
     paint: {
-      'fill-color': '#bde0fe',
+      'fill-color': '#48cae4',
       'fill-opacity': 0.6
     },
     filter: ['==', ['number', ['get', 'ID']], 10000]

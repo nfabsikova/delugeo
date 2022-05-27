@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Delugeo - Natural: Increasing Rainfall</title>
+    <script src="https://libs.cartocdn.com/carto-vl/v1.4.4/carto-vl.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+    <link href="https://carto.com/developers/carto-vl/v1.4.4/examples/maps/style.css" rel="stylesheet">
+    
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;700&display=swap');        
+
+    aside.toolbox {
+        width: 500px;
+    }
+    .axis--y .domain {
+        display: none;
+    }
+
+    .map-overlay {
+        font: 12px/20px "Work Sans", Times, serif;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 640px;
+        height: 100%;
+        padding: 20px;
+        padding-right: 0px;
+	}
+
+    .map-overlay-inner1 {
+        background-color: rgba(255, 255, 255, 0.7);
+        box-shadow:0 1px 2px rgba(0, 0, 0, 0.5);
+        width: 600px;
+        border-radius: 8px;
+        opacity: 0.8;
+        padding-top: 20px;
+    }
+
+    .map-overlay-inner2 {
+        padding-left: 20px;
+    }
+
+    .darkblue {
+        color: #434e87;
+    }
+
+    .darkgreen {
+        color: #006400;
+    }
+
+    #play-button {
+        opacity: 1;
+        background: url("https://raw.githubusercontent.com/MurrayChapman17/DV_Data/main/play.svg") no-repeat;
+        background-position: center;
+        background-color: #3e70a3;
+        width: 30px;
+        height: 25px;;
+    }
+
+    #pause-button {
+        opacity: 1;
+        background: url("https://raw.githubusercontent.com/MurrayChapman17/DV_Data/main/pause.svg") no-repeat;
+        background-position: center;
+        background-color: #467fb5;
+        width: 30px;
+        height: 25px;
+    }
+
+    #current-time {
+        font-size: 18px;
+        font-weight: bold;
+        right: 0px;
+        position: relative;
+        left: 10px;
+    }
+
+    td:not(.top) {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .polygon-mark {
+        width: 40px;
+        display: inline-block;
+    }
+
+    .slider {
+        width: 50px;
+    }
+
+    .italics {
+        font-style: italic;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .description {
+        font-size: 10px;
+        vertical-align: 30%;
+    }
+
+    html * {
+        font-family: "Work Sans" !important;
+    }
+
+    img {
+        opacity: 1;
+        border: 2px solid #467fb550;
+    }
+
+    .inline {
+        display: inline-block;  
+        vertical-align: top;
+    }
+    
+    select {
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .image_text {
+        position: absolute;
+        top: 195px;
+        left: 48px;
+        color: black;
+        font-size: 14px;
+        font-style: italic;
+    }
+
+    input {
+        cursor: pointer;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .box {
+        padding-top: 2px;
+    }
+
+</style>  
+    
+</head>
+<body>
+
+    <div id="map"></div> <!--Were the map is going to go-->
+    <!--Left hand section-->
+    <aside class="toolbox"> <!--Classes from carto CSS-->
+        <div class="box">
+            <h1><span class='darkgreen'>Flooding</span> and <span class='darkblue'>Daily Rainfall</span> in Wales</h1>
+            <div id="controls">
+                <p>
+                    Show all Floods
+                    <input
+                        id="all_floods"
+                        type="checkbox"
+                        name="allfloods"
+                        class="slider"><br><br>
+                </p>
+                <table id="content"></table> <!--Placeholder for legend contents-->
+                <p class="description"><span class="bold"><br>Rainfall Data</span>: The <span class='italics'>MET Office</span>'s 'HadUK-Grid', published by 
+                    <a href="https://catalogue.ceda.ac.uk/uuid/54a99222c1e741a4a70ef1caa8f10c7e">NERC EDS Centre for Environmental Data Analysis</a>
+                    <br><br><span class="bold">Flood Data</span>: <span class='italics'>Natural Resources Wales</span>, published by <a href="https://lle.gov.wales/catalogue/item/HistoricFl/?lang=en">Lle: A GeoPortal for Wales</a></p>
+            </div>
+        </div>
+    </aside>
+
+    <!--Right hand section-->
+    <div class='map-overlay'>
+        <div class="map-overlay-inner1">
+            <div class="map-overlay-inner2">
+                <a href="https://www.bbc.co.uk/news/uk-wales-51520986">
+                    <img src="https://ichef.bbci.co.uk/news/976/cpsprodpb/15BBE/production/_110922098_wns_160220_storm_dennis_flooding_wales_02.jpg" width="350" height="200">
+                </a>
+                <div class="image_text">Storm Dennis Flooding<br>Nantgarw, South Wales, 02/2022</div> <!--Position of text specified in aboslute terms in css-->
+                <p class="inline">
+                    <select name="months" id="month_selector"></select><br><br>
+                    <input type="button" id="play-button"> <!--'js-play-button' is simply the name of a button input-->
+                    <input type="button" id="pause-button"> <!--'js-play-button' is another button input-->
+                    <!--A placeholder for the current time-->
+                    <span id="current-time" class="description"></span><br>
+                    <span class="description">Play Speed: </span>
+                    <!--Input for animation duration-->
+                    <input
+                        type="range"
+                        id="duration_slider"
+                        min="0"
+                        max="200"
+                        step="1"
+                        list="tickmarks">
+                    <datalist id="tickmarks"> <!--Three markers along slider for beginning, middle, and end-->
+                        <option value="0"></option>
+                        <option value="100"></option>
+                        <option value="200"></option>
+                    </datalist>
+                </p><br><br>
+                <p class="description"><span class="italics"><span class="darkblue">Daily Rainfall Events ≥40mm</span>: relative frequencies of across the whole region<span></span></p>
+            </div>
+            <!--Placeholder for d3 graph-->
+            <svg width="580" height="400"></svg>
+        </div> 
+    </div>
+
+    <!--What is displayed before the map loads-->
+    <div id="loader"> <!--This is what to display on screen until told to stop once the specified layer has loaded-->
+        <div class="CDB-LoaderIcon CDB-LoaderIcon--big"> <!--These classes are specified in the carto CSS-->
+            <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
+                <circle
+                    class="CDB-LoaderIcon-path"
+                    cx="25"
+                    cy="25"
+                    r="20"
+                    fill="none"></circle>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        //Element shortcuts
+        const $playbutton = document.getElementById('play-button');
+        const $pausebutton = document.getElementById('pause-button');
+        const $durationslider = document.getElementById('duration_slider')
+        const $allfloods = document.getElementById('all_floods');
+        const $currentTime = document.getElementById('current-time');
+
+        //A couple of variables to initiate
+        var start_x = 0;
+        var drag = false;
+        const time_start = `time('1940-01-01T00:00:00')`;
+        const time_end = `time('2020-12-31T00:00:00')`;
+
+        var month_mapper = { //Means of converting between modulo results and month names
+            'January':0,
+            'February':1,
+            'March':2,
+            'April':3,
+            'May':4,
+            'June':5,
+            'July':6,
+            'August':7,
+            'September':8,
+            'October':9,
+            'November':10,
+            'December':11
+        };
+
+        var svg = d3.select("svg"), //Store the details about the svg as variables
+            width = +svg.attr("width"),
+            height = +svg.attr("height"),
+            margin = {
+                top: 30,
+                right: 0,
+                bottom: 30,
+                left: 20
+            }
+
+        var x_dom_max = 980, //Range of the input, more or less (rounded to near whole-number so d3 divides it up neatly)
+            x_range_max = width - margin.right,
+            x = d3.scaleLinear() 
+                .domain([0, x_dom_max])
+                .range([margin.left, x_range_max]),
+            month_to_year = d3.scaleLinear()
+                .domain([1940, 2021 + (2/3)]) //Scale between the month values and year values as decimals
+                .range([margin.left, x_range_max]);
+        
+        var prog_scaler = d3.scaleLinear() //Scale the range of the x variable to the progress of the animation
+            .domain([margin.left, x_range_max])
+            .range([0,1]);
+
+        var ymax = 0.0032, //Scale the y domain to the svg range
+            y = d3.scaleLinear()
+                .domain([0, ymax])
+                .range([height - margin.bottom, margin.top]);
+
+        var duration_scaler = d3.scalePow() //NON-LINEAR SCALER so that the speed of the animation increases non-linearly with the slider input
+            .exponent(5)
+            .domain([0, 200])
+            .range([15, 5000]);
+        
+        //Add an "all-month" and 12 specific-month options to the select bar
+        let select_elements = `<option value="all">All Months</option>\n`;
+
+        for (month in month_mapper) {
+            select_elements += `<option value="${month}">${month}</option>\n`
+        };
+
+        const month_selector = document.getElementById('month_selector');
+
+        month_selector.innerHTML = select_elements;
+
+        svg.append("g") // Append a 'group' element to the svg
+            .attr("class", "axis axis--x") // Give it these classes
+            .attr("transform", "translate(0," + (height - margin.bottom) + ")") // Move it DOWN to the bottom of the graph, considering where the margin is
+            .call(d3.axisBottom(month_to_year).ticks(20).tickFormat(t => t.toString().replace(/,/g, '')))
+            .style("font", "12px times")
+
+        svg.append("g") // This is another group corresponding instead to the y axis
+            .attr("class", "axis axis--y") // This will take the additional stylings provided above
+            .attr("transform", "translate(" + margin.left + ",0)") // Move it to the correct position
+            .call(d3.axisLeft(y).tickValues([])); // Apply this to the axis, based on the specified 'scale' and ticks
+
+        d3.json("https://raw.githubusercontent.com/MurrayChapman17/DV_Data/main/Rainfall.json", function(error, data) { // Load the data, and run the following function with 'rainfall' as the output
+
+            if (error) throw error; // ...assuming no errors
+
+            var rainfall = data.date;
+
+            function create_graph(subset = true, month) { // CREATES THE DENSITY GRAPH
+
+                d3.selectAll(".graph_features").remove(); // Remove the previous graph
+
+                if (subset == true) { // If a specific month is selected
+                    rainfall = data.filter(function (el) {
+                        return (el % 12 == month);
+                    });
+                    hist_thresholds = [0,70,140,210,280,350,420,490,560,630,700,770,840,910,980]; // Have to set these thresholds manually
+                    line_thresholds = 20; // Set parameters for the histogram and density functions
+                    smoother = 45;
+                } else { // If 'all-months' is selected
+                    rainfall = data;
+                    hist_thresholds = 50;
+                    line_thresholds = 50;
+                    smoother = 35;
+                };
+
+                var xmax = d3.max(rainfall),
+                    n = rainfall.length, // Number of data points (rainfall incidents) stored as n
+                    bins = d3.histogram().domain([0,980]).thresholds(hist_thresholds)(rainfall), // A histogram function is built, and then immediately applied to 'rainfall' 
+                    density = kernelDensityEstimator(kernelEpanechnikov(smoother), x.ticks(line_thresholds))(rainfall), // Run the density functions on the data
+                    nbins = bins.length,
+                    standardiser = n * xmax / nbins; // Function built and immediately applied to rainfall again
+                svg.insert("g", "*") // 'g': 'group' element outside of every element, such that everything will posess the attributes below
+                    .classed("graph_features", true)
+                    .attr("fill", "#467fb540") // Every element which can have a fill of this colour (rgba) will do
+                    .selectAll("rect") // Select all the rectangle elements - currently none, but they will be added with .enter() !
+                    .data(bins) // Apply the bins data to all these rectangles
+                    .enter() // For all the bins data that don't have a rectangle...
+                    .append("rect") // ...create one! With these attributes
+                    .attr("x", function(d) {
+                        return x(d.x0);
+                    }) // 'd' represents each element in the 'bins' list. x0 is the lower bound
+                    .attr("y", function(d) {
+                        return y(d.length / standardiser);
+                    })
+                    .attr("width", function(d) {
+                        return x(d.x1) - x(d.x0) - 1;
+                    }) // x1 is the upper
+                    .attr("height", function(d) {
+                        return y(0) - y(d.length / standardiser);
+                    });
+
+                //The two chains below create the line and the area below it respectively
+
+                svg.append("path")
+                    .classed("graph_features", true)
+                    .datum(density) // Data from the kernel function
+                    .attr("fill", "#0000")
+                    .attr("stroke", "#434e87e0")
+                    .attr("stroke-width", 1.5)
+                    .attr("stroke-linejoin", "round")
+                    .attr("d", d3.line()
+                        .curve(d3.curveBasis)
+                        .x(function(d) {
+                            return x(d[0]);
+                        })
+                        .y(function(d) {
+                            return y(d[1]);
+                        })
+                    )
+                
+                svg.append("path")
+                    .classed("graph_features", true)
+                    .datum(density)
+                    .attr("fill", "#434e8750")
+                    .attr("d", d3.area() // Not d3.line this time
+                        .curve(d3.curveBasis)
+                        .x(function(d) {
+                            return x(d[0]);
+                        })
+                        .y0(height - margin.bottom)
+                        .y1(function(d) {
+                            return y(d[1]);
+                        })
+                    );
+            };
+
+            create_graph(false); // Initial setting of all-months
+
+            // Event listener to create new graphs when the setting is changed
+            month_selector.addEventListener('change', (e) => {
+                if (e.target.value == "all") {
+                    create_graph(false);
+                } else {
+                    month = month_mapper[e.target.value];
+                    create_graph(true, month);
+                }
+            });
+
+            // d3 sliderbar line
+            svg.append("line")
+                .attr("id", "sliderbar")
+                .attr("x1", x(start_x))
+                .attr("y1", y(0))
+                .attr("x2", x(start_x))
+                .attr("y2", y(ymax))
+                .style("stroke-width", 6)
+                .style("stroke", "#006400b0")
+                .style("cursor", "pointer");
+
+            const $timeRange = d3.select("#sliderbar"); //sliderbar access shortcut
+
+            const map = new mapboxgl.Map({
+                container: 'map', //Put the map in the 'map' divider created above
+                style: carto.basemaps.positron, //Background map
+                center: [-4.03, 52.39],
+                zoom: 7.8
+            });
+
+            //Navigation controls
+            const nav = new mapboxgl.NavigationControl(); //Navigation control object created
+            map.addControl(nav, 'bottom-right'); //...then placed in the top left
+            map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right'); //This one is done all in one go
+
+            //** CARTO VL functionality begins here **//
+
+            //Credentials
+            carto.setDefaultAuth({
+                username: 'mchapman17',
+                apiKey: 'c87b54f435670fd4fad68f7e34365383bd134cb1'
+            });
+
+            var init_duration = `${duration_scaler(100)}`;
+
+            // LAYERS
+
+            const rain_source = new carto.source.Dataset('rainfall');
+
+            const rain_viz = new carto.Viz(`
+                @anim_input: linear($date, ${time_start}, ${time_end})
+                @rainfall_ramp: [50, 60, 70, 80, 100, 120]
+                @out_fades: [0.5, 0.6, 0.7, 0.85, 1, 1.2, 1.4]
+                @out_fader: ramp(buckets($value, @rainfall_ramp), @out_fades)
+                @fades: fade(0.15, @out_fader)
+                @duration: ${init_duration}
+                @animation: animation(@anim_input, @duration, @fades)
+                filter: @animation
+                @palette: [#4db9d7, #467fb5, #3e70a3, #434e87, #6f4e94, #7a3a8d, #6e016b]
+                color: ramp(buckets($value, @rainfall_ramp), @palette)
+                @widths: [7.5, 15, 25, 35, 55, 75, 100]
+                width: ramp(buckets($value, @rainfall_ramp), @widths)
+                strokeWidth: 0
+            `);
+
+            const rain_layer = new carto.Layer('rain_layer', rain_source, rain_viz);
+
+            const flood_source = new carto.source.Dataset('welshfloods');
+
+            const flood_viz = new carto.Viz(`
+                @anim_input: linear($start_date, ${time_start}, ${time_end})
+                @fader: fade(0.3, 1.8)
+                @duration: ${init_duration}
+                @animation: animation(@anim_input, @duration, @fader)
+                filter: @animation
+                color: #40E0D0
+                strokeColor: #006400
+                strokeWidth: 1.5
+            `);
+
+            const flood_layer = new carto.Layer('flood_layer', flood_source, flood_viz);
+
+            const static_flood_source = new carto.source.Dataset('welshfloods');
+
+            const static_flood_viz = new carto.Viz(`
+                color: #40E0D000
+                strokeColor: #00640000
+                strokeWidth: 0.5
+            `);
+
+            const static_flood_layer = new carto.Layer('static_flood_layer', static_flood_source, static_flood_viz);
+
+            rain_layer.addTo(map);
+            flood_layer.addTo(map);
+            static_flood_layer.addTo(map);
+
+            //Store the starting value on the slider bar (0-1) as 'last'
+            let last = $timeRange.attr("x1"); //'last' enables detection of when the usuer has manually altered the sliderbar vs natural animation progression
+            let progress = prog_scaler($timeRange.attr("x1"));
+
+            rain_viz.variables.animation.setProgressPct(progress); //Set the percent progress of the animation to match the progress of the slider bar
+            flood_viz.variables.animation.setProgressPct(progress); //Same for the floods animation
+
+            $playbutton.addEventListener('click', () => { //On click of the play button, play both animations
+                rain_viz.variables.animation.play();
+                flood_viz.variables.animation.play();
+            });
+
+            $pausebutton.addEventListener('click', () => { //On click of the pause button, pause both animations
+                rain_viz.variables.animation.pause();
+                flood_viz.variables.animation.pause();
+            });
+
+            $durationslider.addEventListener('change', () => {
+                let slider_domain = 200 - parseInt($durationslider.value, 10);
+                let scaled_value = duration_scaler(slider_domain);
+                rain_viz.variables.duration = scaled_value;
+                flood_viz.variables.duration = scaled_value;
+            });
+
+            //This block constantly drags forward both the sliderbar value and 'last' with the animation as it progresses
+            rain_layer.on('updated', () => { //When the animation progresses or changes
+                if ($timeRange.attr("x1") == last) { //Under normal (when the user hasn't manually changed the sliderbar)
+                    value = prog_scaler.invert(rain_viz.variables.animation.getProgressPct()); //Use the reverse of the scaler to get from the progress pct to the x value
+                    $timeRange
+                        .attr("x1", value)
+                        .attr("x2", value);
+                    last = $timeRange.attr("x1"); //Store this as the 'last' value
+                }
+                //When the above isn't true, the user has manually changed the sliderbar value, and we don't want it to jump back immediately to the animation value
+                //Whatever the case, we want the current time value to constantly match the value of the sliderbar/animation
+                $currentTime.innerText = rain_viz.variables.animation.getProgressValue().toISOString().substr(0, 10);
+            });
+
+            //Listen for changes to the input slider
+            
+            //while (drag == true) { //This will fire when the user changes the timeslider
+
+                
+                //};
+            //};
+
+            function dragstarted(d) {
+                d3.select(this).raise().classed('active1', true);
+                drag = true;
+            }
+
+            function dragged() {
+                const $playbutton = document.getElementById('play-button');
+                xE = d3.event.x;
+                slider = d3.select(this);
+                if (xE < x(0)) {
+                    slider
+                        .attr('x1', x(0))
+                        .attr('x2', x(0));
+                } else if (xE > x_range_max) {
+                    slider
+                        .attr('x1', x_range_max)
+                        .attr('x2', x_range_max);
+                } else {
+                    slider
+                        .attr('x1', xE)
+                        .attr('x2', xE);
+                };
+                progress = prog_scaler($timeRange.attr("x1"));
+                rain_viz.variables.animation.setProgressPct(progress); //...same as what we did initially
+                flood_viz.variables.animation.setProgressPct(progress);
+                last = $timeRange.attr("x1"); //This stores the 'last' value as the one the user has just set it to
+                //Update time value outputted to match the value of the animation progress
+                //Note that this isn't the percentage of the progress, but the absolute time value (getProgressValue(), not getProgressPct())
+                //We just want the day, not the time, so we transform the value to a string and then select the subset of characters
+                $currentTime.innerText = rain_viz.variables.animation.getProgressValue().toISOString().substr(0, 10);
+
+                //COULD COMPACT THIS TO AN 'IF NOT'??
+                if (rain_viz.variables.animation.isPlaying()) {
+                //If the animation is playing, the layer output will shift to the altered time and play 
+                } else { //If it is paused, the output won't change, so it needs to play 'once' so that it moves to the new paused value, and then stop again
+                    rain_viz.variables.animation.play();
+                    rain_viz.variables.animation.pause();
+                    flood_viz.variables.animation.play();
+                    flood_viz.variables.animation.pause();           
+                };
+            }
+
+            function dragended(d) {
+                d3.select(this).classed('active1', false);
+                drag = false;
+            }
+
+            var drag = d3.drag() // A set of drag functions to apply to stuff
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended);
+
+            $timeRange.call(drag);
+                
+            $allfloods.addEventListener('change', () => { //On click of the pause button, pause both animations
+                if($allfloods.checked) {
+                    flood_layer.hide();
+                    static_flood_layer.show();
+                    static_flood_viz.color.blendTo('#40E0D0FF');
+                    static_flood_viz.strokeColor.blendTo('#006400FF');
+                } else {
+                    static_flood_viz.color.blendTo('#40E0D000');
+                    static_flood_viz.strokeColor.blendTo('#00640000');
+                    setTimeout(() => {
+                        // Make the UK layers visible and global ones invisible
+                        static_flood_layer.hide();
+                        flood_layer.show();},
+                    800);
+                };
+            });
+
+            rain_layer.on('loaded', () => {
+
+                document.getElementById('loader').style.opacity = '0';
+
+                static_flood_layer.hide();
+
+                //Get the data rain layer visualization ramp stored in 'color;''
+                const colour_legend = rain_layer.viz.color.getLegendData();
+                const width_legend = rain_layer.viz.width.getLegendData();
+                let legend_elements = document.getElementById('content').innerHTML; //Initiate the list of colours
+                let legend_widths = ''; //Initiate the list of widths
+
+
+                //**For some reason (probably in the CSS), the polygon-mark settings only work within <li> tags!
+                legend_elements += `
+                <tr>
+                    <td>
+                        Floods
+                    </td>
+                    <td> <br><p
+                            class="polygon-mark"
+                            style='
+                                background-color: ${flood_layer.viz.color};
+                                border: 2px solid ${flood_layer.viz.strokeColor};'><br></p>
+                    </td>
+                </tr>
+                <tr height="5px">
+                </tr>`;
+
+                colour_legend.data.forEach((legend, index) => { //For every colour in the rain_viz colour ramp data
+
+                    const colour = legend.value; //Retrieve the colour
+                    const rgba = `rgba(${colour.r}, ${colour.g}, ${colour.b}, ${colour.a})`; //Split the colour into its constituent parts (including alpha)
+
+                    const width = width_legend.data[index].value;
+
+                    var label = legend.key[0];
+                    if (label == '-Infinity') {
+                        label = 40
+                    };
+                    //Add the marker point to the string of new HTML-element text (not added to page yet, just text stored as a string)
+                    //The point first
+                    //Followed by a corresponding label
+                    legend_elements += `
+                        <tr>
+                            <td width="150px">
+                                ≥  ${label}mm  
+                            </td>
+                            <td width="200px"> <p
+                                class='point-mark'
+                                style='
+                                    background-color: ${rgba};
+                                    width: ${width}px;
+                                    height: ${width}px;'></p>
+                            </td>
+                        </tr> `;
+                });
+
+                //Add the list of HTML element to the placeholder 'content' element
+                document.getElementById('content').innerHTML = legend_elements;
+
+            });
+        
+        });
+
+        // Kernel Density Functions, adapted from Yan Holtz https://d3-graph-gallery.com/graph/density_basic.html
+
+        function kernelDensityEstimator(kernel, X) {
+            return function(V) {
+                return X.map(function(x) {
+                    return [x, d3.mean(V, function(v) {
+                        return kernel(x - v);
+                    })];
+                });
+            };
+        }
+
+        function kernelEpanechnikov(k) {
+            return function(v) {
+                return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
+            };
+        }
+
+    </script>
+
+</body>
+</html>
